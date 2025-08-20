@@ -1,54 +1,38 @@
-import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import React from "react";
-import InputField from "./InputField";
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import  InputField  from './InputField';
+import React from 'react';
 
-describe("InputField", () => {
-  it("renders label and placeholder", () => {
-    render(
-      <InputField
-        label="Name"
-        placeholder="Enter name"
-        value=""
-        onChange={() => {}}
-      />
-    );
-    expect(screen.getByText("Name")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Enter name")).toBeInTheDocument();
+describe('InputField Component', () => {
+  test('renders input with label', () => {
+    render(<InputField label="Name" placeholder="Enter name" />);
+    const input = screen.getByLabelText('Name');
+    expect(input).toBeInTheDocument();
+    expect((input as HTMLInputElement).placeholder).toBe('Enter name');
   });
 
-  it("shows error when invalid", () => {
-    render(
-      <InputField
-        label="Email"
-        value=""
-        onChange={() => {}}
-        invalid
-        errorMessage="Invalid email"
-      />
-    );
-    expect(screen.getByText("Invalid email")).toBeInTheDocument();
-    const input = screen.getByLabelText("Email") as HTMLInputElement;
-    expect(input.getAttribute("aria-invalid")).toBe("true");
+  test('displays helper text', () => {
+    render(<InputField label="Email" helperText="Enter valid email" />);
+    expect(screen.getByText('Enter valid email')).toBeInTheDocument();
   });
 
-  it("clears when clear button clicked", () => {
-    const Wrapper = () => {
-      const [v, setV] = React.useState("hello");
-      return (
-        <InputField
-          label="Search"
-          value={v}
-          onChange={(e) => setV((e.target as HTMLInputElement).value)}
-          clearable
-        />
-      );
-    };
-    render(<Wrapper />);
-    const input = screen.getByLabelText("Search") as HTMLInputElement;
-    expect(input.value).toBe("hello");
-    const clearBtn = screen.getByRole("button", { name: /clear input/i });
-    fireEvent.click(clearBtn);
-    expect(input.value).toBe("");
+  test('displays error message', () => {
+    render(<InputField label="Password" errorMessage="Required" invalid />);
+    expect(screen.getByText('Required')).toBeInTheDocument();
+  });
+
+  test('calls onChange when typing', () => {
+    const handleChange = jest.fn((e: React.ChangeEvent<HTMLInputElement>) => {});
+    render(<InputField label="Username" onChange={handleChange} />);
+    const input = screen.getByLabelText('Username') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 'Sandeep' } });
+    expect(handleChange).toHaveBeenCalledTimes(1);
+    expect(input.value).toBe('Sandeep');
+  });
+
+  test('input is disabled when disabled prop is true', () => {
+    render(<InputField label="Disabled Input" disabled />);
+    const input = screen.getByLabelText('Disabled Input') as HTMLInputElement;
+    expect(input.disabled).toBe(true);
   });
 });
