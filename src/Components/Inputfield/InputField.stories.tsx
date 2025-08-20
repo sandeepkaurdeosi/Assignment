@@ -1,14 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import React, { useState } from "react";
-import InputField, { type InputSize, type InputVariant } from "./InputField";
+
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import InputField, { type InputSize, type InputVariant, type InputFieldProps } from "./Inputfield";
 
 const meta: Meta<typeof InputField> = {
   title: "Components/InputField",
   component: InputField,
   tags: ["autodocs"],
   args: {
-    variant: "outlined" as InputVariant ,
-    size: "md" as InputSize ,
+    variant: "outlined" as InputVariant,
+    size: "md" as InputSize,
     disabled: false,
     invalid: false,
     loading: false,
@@ -29,7 +30,7 @@ export default meta;
 
 type Story = StoryObj<typeof InputField>;
 
-const Controlled = (args: any) => {
+const Controlled = (args: InputFieldProps) => {
   const [val, setVal] = useState("");
   return (
     <div className="max-w-md">
@@ -139,4 +140,5 @@ export const ClearAndPassword: Story = {
     );
   },
 };
+
 

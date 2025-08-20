@@ -1,6 +1,5 @@
-import React from 'react';
 import { type Meta, type StoryFn } from '@storybook/react-vite';
-import { DataTable, type DataTableProps } from './DataTable';
+import { DataTable, type DataTableProps, type Column } from './DataTable';
 
 interface User {
   id: number;
@@ -9,17 +8,20 @@ interface User {
   age: number;
 }
 
+
 const sampleData: User[] = [
   { id: 1, name: 'Sandeep', email: 'sandeep@example.com', age: 22 },
   { id: 2, name: 'Diksha', email: 'diksha@example.com', age: 23 },
   { id: 3, name: 'Aman', email: 'aman@example.com', age: 25 },
 ];
 
-const columns = [
+
+const columns: Column<User>[] = [
   { key: 'name', title: 'Name', dataIndex: 'name', sortable: true },
   { key: 'email', title: 'Email', dataIndex: 'email', sortable: true },
   { key: 'age', title: 'Age', dataIndex: 'age', sortable: true },
 ];
+
 
 export default {
   title: 'Components/DataTable',
@@ -29,6 +31,7 @@ export default {
 
 const Template: StoryFn<DataTableProps<User>> = (args) => <DataTable<User> {...args} />;
 
+
 export const Default = Template.bind({});
 Default.args = {
   data: sampleData,
@@ -36,4 +39,5 @@ Default.args = {
   selectable: true,
   loading: false,
 };
+
 

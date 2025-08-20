@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import  InputField  from './InputField';
-import React from 'react';
+import InputField  from './Inputfield'; 
 
 describe('InputField Component', () => {
   test('renders input with label', () => {
@@ -22,7 +21,7 @@ describe('InputField Component', () => {
   });
 
   test('calls onChange when typing', () => {
-    const handleChange = jest.fn((e: React.ChangeEvent<HTMLInputElement>) => {});
+     const handleChange = jest.fn();
     render(<InputField label="Username" onChange={handleChange} />);
     const input = screen.getByLabelText('Username') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 'Sandeep' } });

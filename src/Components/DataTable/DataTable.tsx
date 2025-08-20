@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState, useMemo } from 'react';
 
 export interface Column<T> {
   key: string;
@@ -31,17 +31,22 @@ export function DataTable<T extends { id: string | number }>({
     if (selectedRows.some(r => r.id === row.id)) {
       updatedRows = selectedRows.filter(r => r.id !== row.id);
     } else {
-      updatedRows = selectable === 'single' ? [row] : [...selectedRows, row];
+      
+      updatedRows = selectable ? [...selectedRows, row] : [row];
     }
     setSelectedRows(updatedRows);
     onRowSelect?.(updatedRows);
   };
 
-  const sortedData = React.useMemo(() => {
+  const sortedData = useMemo(() => {
     if (!sortKey) return data;
     return [...data].sort((a, b) => {
-      if (a[sortKey] < b[sortKey]) return sortOrder === 'asc' ? -1 : 1;
-      if (a[sortKey] > b[sortKey]) return sortOrder === 'asc' ? 1 : -1;
+      const aValue = a[sortKey];
+      const bValue = b[sortKey];
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
   }, [data, sortKey, sortOrder]);
@@ -56,6 +61,8 @@ export function DataTable<T extends { id: string | number }>({
       setSortOrder('asc');
     }
   };
+
+  const renderCell = (value: unknown) => (value != null ? String(value) : '-');
 
   return (
     <table className="min-w-full border border-gray-200 rounded-md">
@@ -89,8 +96,8 @@ export function DataTable<T extends { id: string | number }>({
               </td>
             )}
             {columns.map(col => (
-              <td key={col.key as string} className="p-2">
-                {row[col.dataIndex] != null ? row[col.dataIndex] : '-'}
+              <td key={col.key} className="p-2">
+                {renderCell(row[col.dataIndex])}
               </td>
             ))}
           </tr>
